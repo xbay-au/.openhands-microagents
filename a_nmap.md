@@ -1,40 +1,66 @@
 
 
-
 ---
-name: user-bin_tools Microagent
+name: Nmap Microagent
 type: knowledge
 version: 1.0.0
 agent: CodeActAgent
 triggers:
-  - run nmap
+  - /nmap
 
 # Nmap Microagent
 
-This microagent provides a simple interface to run `nmap` scans.
+## Overview
+The Nmap (Network Mapper) microagent provides capabilities for network discovery and security auditing using the Nmap tool. This agent helps in scanning networks, identifying hosts and services, and detecting vulnerabilities.
 
-## Usage
+## Prerequisites
+- Ensure VPN is set up and configured with Tor routing enabled.
 
-To use this microagent, trigger it with the phrase "run nmap". The agent will execute the `nmap` command and return the output.
+### Usage Example
+\`\`\`bash
+# Example command to check if Tor is running through VPN
+curl --socks5 127.0.0.1:9050 https://check.torproject.org/
+\`\`\`
 
-## Example
+## Capabilities
+- Network scanning
+- Service detection
+- OS detection
+- Vulnerability scanning
 
-User: run nmap
-Agent: [Executes `nmap` and returns the output]
+## Credentials and Environment Variables
+No specific credentials or environment variables are required for basic usage. However, for advanced features or API integration, you might need to set up Nmap with appropriate permissions.
 
-## Notes
+## Error Handling
+- Ensure Nmap is installed on the system.
+- Handle permission errors when scanning networks.
+- Manage timeouts for large network scans.
 
-- Ensure that `nmap` is installed on your system.
-- This microagent runs `nmap` with default options. You can modify the command as needed within the agent's code.
+## Usage Examples
 
-## Command
+### Basic Network Scan
+\`\`\`bash
+nmap 192.168.1.0/24
+\`\`\`
 
-The command run by this microagent is:
-```bash
-/nmap
-```
+### Service Detection
+\`\`\`bash
+nmap -sV 192.168.1.1
+\`\`\`
 
----
+### OS Detection
+\`\`\`bash
+nmap -O 192.168.1.1
+\`\`\`
+
+## Limitations
+- Requires Nmap to be installed on the system.
+- May need administrative privileges for certain scans.
+- Large networks can take significant time to scan.
+
+## Additional Resources
+- [Nmap Official Documentation](https://nmap.org/docs.html)
+
 
 
 
