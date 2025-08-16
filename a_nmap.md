@@ -1,6 +1,5 @@
 
 
-
 ---
 name: Nmap Microagent
 type: knowledge
@@ -13,6 +12,15 @@ triggers:
 
 ## Overview
 The Nmap (Network Mapper) microagent provides capabilities for network discovery and security auditing using the Nmap tool. This agent helps in scanning networks, identifying hosts and services, and detecting vulnerabilities.
+
+## Prerequisites
+- Ensure VPN is set up and configured with Tor routing enabled.
+
+### Usage Example
+\`\`\`bash
+# Example command to check if Tor is running through VPN
+curl --socks5 127.0.0.1:9050 https://check.torproject.org/
+\`\`\`
 
 ## Capabilities
 - Network scanning
