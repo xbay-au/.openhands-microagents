@@ -53,6 +53,8 @@ The agent will guide you through:
    7) CORS Misconfiguration Checks
    8) JavaScript Endpoint Discovery
    9) Custom Wordlist
+   10) Recursive Scanning
+
 
 2. Wordlist Management:
    - Wordlists are stored under `/workspace/wordlists`.
