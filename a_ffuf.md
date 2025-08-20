@@ -90,6 +90,29 @@ Agent: [Results]
 
 ## Usage Options
 
+
+### Recommended Improvements
+
+All commands below can be enhanced by appending the following optional flags:
+
+- `-t <threads>`: Specify concurrency (e.g., `-t 50`).
+- `-c`: Enable colorized output.
+- `-ac`: Auto-calibrate filters based on response sizes.
+- `-o <file> -of json`: Save results to a JSON file for easy parsing.
+- `-H "Host: FUZZ.example.com"`: Use this instead of `-host` for subdomain/virtual host enumeration.
+
+
+Example:
+```bash
+ffuf -w /workspace/wordlists/directory-list-2.3-medium.txt \
+     -u http://example.com/FUZZ \
+     -t 50 \
+     -c \
+     -ac \
+     -o results_directory.json \
+     -of json
+```
+
 1. Directory & File Discovery
    ```bash
    ffuf -w /workspace/wordlists/directory-list-2.3-medium.txt -u http://example.com/FUZZ -mc 200,204,301,403
