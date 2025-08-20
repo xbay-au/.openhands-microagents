@@ -12,7 +12,7 @@
 
 6. ✅ Improve custom wordlist UX
 
-7. 🔄 Validate URLs
+7. ✅ Validate URLs
 
 8. ⏳ Add non-interactive/argument mode
 

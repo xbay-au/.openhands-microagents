@@ -8,6 +8,7 @@ import subprocess
 import json
 import random
 import time
+from urllib.parse import urlparse
 from datetime import datetime
 
 # Dependencies: requests, rich, tqdm
@@ -116,17 +117,43 @@ def choose_scan_type():
     return choice, SCAN_TYPES[choice]
 
 
+
+
+def validate_url(url: str) -> bool:
+    """
+    Validate a URL containing FUZZ placeholder and ensure proper format.
+    """
+    if 'FUZZ' not in url:
+        console.print("URL must contain 'FUZZ' placeholder.", style="red")
+        return False
+    # Replace placeholder for parsing
+    test_url = url.replace('FUZZ', 'example')
+    parsed = urlparse(test_url)
+    if parsed.scheme not in ('http', 'https') or not parsed.netloc:
+        console.print("Invalid URL format. Please include http(s):// and a valid host.", style="red")
+        return False
+    return True
+
 def get_target_url(scan_key):
-    stype, _ = SCAN_TYPES[scan_key]
-    if scan_key == '3' or scan_key == '5':
-        host = console.input("Base domain (e.g. example.com): ").strip()
-        return f"http://FUZZ.{host}"
+    """
+    Prompt and validate target URL based on scan type.
+    Ensures the 'FUZZ' placeholder is present and format is correct.
+    """
+    if scan_key in ('3', '5'):
+        # Base domain scan, ensure URL format
+        while True:
+            host = console.input("Base domain (e.g. example.com): ").strip()
+            url = f"http://FUZZ.{host}"
+            if validate_url(url):
+                return url
+            console.print("Let's try the base domain again.", style="yellow")
     else:
-        url = console.input("Target URL (include http:// or https://, use FUZZ where appropriate): ").strip()
-        if 'FUZZ' not in url:
-            console.print("URL must contain 'FUZZ' placeholder.", style="red")
-            return get_target_url(scan_key)
-        return url
+        # Custom URL scan
+        while True:
+            url = console.input("Target URL (include http:// or https://, use FUZZ where appropriate): ").strip()
+            if validate_url(url):
+                return url
+            console.print("Let's try entering the URL again.", style="yellow")
 
 
 def input_generic(prompt, default=None):
