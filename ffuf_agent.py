@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+import threading
+import base64
+import getpass
 import os
 import sys
 import subprocess
@@ -67,6 +70,15 @@ SCAN_TYPES = {
     "8": ("JavaScript Endpoint Discovery", "js-endpoints.txt"),
     "9": ("Custom Wordlist", None),
     "10": ("Recursive Scanning", "directory-list-2.3-medium.txt"),
+}
+
+
+# Scan profiles presets
+PROFILES = {
+    "1": ("None", {"threads": 50, "delay": 0, "autocal": False}),
+    "2": ("Stealth", {"threads": 10, "delay": 200, "autocal": True}),
+    "3": ("Balanced", {"threads": 40, "delay": 100, "autocal": True}),
+    "4": ("Fast", {"threads": 100, "delay": 0, "autocal": False}),
 }
 
 
@@ -204,6 +216,35 @@ def main():
     else:
         wordlist_name = custom if scan_key=='9' else default_list
         wordlist = ensure_wordlist(wordlist_name)
+        # Initialize headers list
+    headers = []
+    # Authentication
+    auth_choice = console.input("Authentication (none/basic/bearer) [none]: ").strip().lower()
+    if auth_choice == 'basic':
+        username = console.input("Username: ").strip()
+
+    # Scan profile selection
+    console.print("[bold]Scan Profile Selection:[/bold]")
+    for key, (pname, cfg) in PROFILES.items():
+        console.print(f" {key}) {pname}")
+    prof_choice = input_generic("Profile", default="3")
+    name, cfg = PROFILES.get(prof_choice, PROFILES["3"])
+    threads = cfg["threads"]
+    delay = cfg["delay"]
+    autocal = cfg["autocal"]
+    console.print(f"Using profile [cyan]{name}[/cyan]: threads={threads}, delay={delay}, autocalibrate={autocal}")
+    if input_generic("Customize profile settings? (y/n)", default="n").lower().startswith('y'):
+        threads = int(input_generic("Threads", default=str(threads)))
+        delay = int(input_generic("Delay ms", default=str(delay)))
+        autocal = input_generic("Auto-calibrate filters? (y/n)", default="y" if autocal else "n").lower().startswith('y')
+
+        password = getpass.getpass("Password: ")
+        token = base64.b64encode(f"{username}:{password}".encode()).decode()
+        headers.append(f"Authorization: Basic {token}")
+    elif auth_choice == 'bearer':
+        token = getpass.getpass("Bearer token: ")
+        headers.append(f"Authorization: Bearer {token}")
+
     # Target URL
     url = get_target_url(scan_key)
     # Additional options
@@ -211,7 +252,7 @@ def main():
     status_codes = input_generic("Status codes (comma-separated)", default="200,204,301,403")
     color = input_generic("Color output? (y/n)", default="y").lower().startswith('y')
     autocal = input_generic("Auto-calibrate filters? (y/n)", default="y").lower().startswith('y')
-    # Headers
+    # Custom Headers
     headers = []
     if input_generic("Add custom HTTP header? (y/n)", default="n").lower().startswith('y'):
         while True:
