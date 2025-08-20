@@ -293,11 +293,23 @@ def main():
     scan_key, (stype, default_list) = choose_scan_type()
     # Determine wordlist
     if scan_key == '9':
-        custom = console.input("Path to custom wordlist: ").strip()
-        wordlist = custom
+        import itertools  # local import for wordlist preview
+        # Custom wordlist selection with existence check and preview
+        while True:
+            path = console.input("Path to custom wordlist: ").strip()
+            if not os.path.isfile(path):
+                console.print("File not found. Please enter a valid path.", style="red")
+                continue
+            console.print(f"Preview of [cyan]{path}[/cyan] (first 10 lines):")
+            with open(path) as wf:
+                for i, line in enumerate(itertools.islice(wf, 10), start=1):
+                    console.print(f"  {i}: {line.strip()}")
+            if console.input("Proceed with this wordlist? (y/n) [y]: ").strip().lower().startswith('y'):
+                wordlist = path
+                break
+            console.print("Let's choose a different file.", style="yellow")
     else:
-        wordlist_name = custom if scan_key=='9' else default_list
-        wordlist = ensure_wordlist(wordlist_name)
+        wordlist = ensure_wordlist(default_list)
         # Initialize headers list
     headers = []
     # Authentication
