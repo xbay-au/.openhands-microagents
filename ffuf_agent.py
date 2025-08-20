@@ -171,10 +171,11 @@ def build_command(params):
 
 def run_ffuf(cmd):
     console.print(f"Running: [bold]{' '.join(cmd)}[/bold]")
-    result = subprocess.run(cmd, capture_output=True)
+    # Display live progress spinner while ffuf runs
+    with console.status("[bold green]Scanning in progress...[/bold green]", spinner="dots"):
+        result = subprocess.run(cmd)
     if result.returncode != 0:
         console.print(f"FFUF exited with code {result.returncode}", style="red")
-        console.print(result.stderr.decode(), style="red")
     return result
 
 
