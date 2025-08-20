@@ -32,9 +32,10 @@ run ffuf -w /workspace/wordlists/wordlist.txt -u http://example.com/FUZZ
 ```
 
 ### Interactive Guided Session
-Trigger without flags to start a step-by-step workflow:
+Trigger without flags or with only the target URL to start a step-by-step workflow:
 ```bash
 run ffuf
+run ffuf http://example.com
 ```
 The agent will guide you through:
 1. Choosing a scan type
