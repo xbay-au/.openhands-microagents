@@ -141,6 +141,13 @@ Agent: [Results]
     ffuf -w raft-medium-words.txt -u http://example.com/FUZZ \
          -e .php,.aspx,.json,.xml -mc 200,204,301,302,307,401,403 -t 150 -ac
     ```
+11. Recursive Scanning
+    ```bash
+    ffuf -w /workspace/wordlists/directory-list-2.3-medium.txt \
+         -u http://example.com/FUZZ -recursion -recursion-depth 2
+    ```
+
+
 
 ## Innovative Uses
 
