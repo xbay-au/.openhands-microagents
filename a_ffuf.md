@@ -1,10 +1,18 @@
 ---
 name: FFUF Microagent
-type: knowledge
-version: 1.0.0
-agent: CodeActAgent
+type: tool
+version: 1.1.0
+agent: ffuf_agent.py
+entrypoint: ffuf_agent.py
 triggers:
   - run ffuf
+  - ffuf scan
+  - run ff
+  - ff
+  - fuzz
+  - fuzz http
+  - fuzz http site
+  - faster you fool
 ---
 
 # FFUF Microagent
@@ -25,10 +33,10 @@ FFUF (Fuzz Faster U Fool) is a fast and flexible web fuzzer written in Go. It is
 
 ## Usage
 
-### Quick Execution
-Run any FFUF command directly:
+### Interactive Execution
+Run the interactive FFUF agent:
 ```bash
-run ffuf -w /workspace/wordlists/wordlist.txt -u http://example.com/FUZZ
+run ffuf
 ```
 
 ### Interactive Guided Session
@@ -90,6 +98,16 @@ Agent: Running:
        ffuf -w /workspace/wordlists/directory-list-2.3-medium.txt -u http://example.com/FUZZ -mc 200,204,301,403
 Agent: [Results]
 ```
+## Updated Tool Usage
+
+After converting to a tool microagent, you can now use:
+
+```bash
+python ffuf_agent.py
+```
+
+This will launch the fully interactive wizard with all advanced features.
+
 
 ## Usage Options
 
