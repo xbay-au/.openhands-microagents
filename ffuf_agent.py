@@ -159,6 +159,10 @@ def build_command(params):
         cmd += ['-delay', str(params['delay'])]
     if params['recursion']:
         cmd += ['-recursion', '-recursion-depth', str(params['depth'])]
+
+        # Decoy requests
+        if params.get('decoy'):
+            cmd += ['-D', params['decoy']]
     # output JSON
     outfile = params['output']
     cmd += ['-of', 'json', '-o', outfile]
@@ -274,6 +278,10 @@ def main():
     if scan_key == '10':
         recursion = True
         depth = int(input_generic("Recursion depth", default="2"))
+    # Decoy requests
+    decoy = ''
+    if input_generic("Use decoy requests? (y/n)", default="n").lower().startswith('y'):
+        decoy = console.input("Path to decoy URL list (one per line): ").strip()
     # Output file
     now = datetime.now().strftime('%Y%m%d_%H%M%S')
     outfile = f"ffuf_results_{now}.json"
@@ -289,6 +297,7 @@ def main():
         'delay': delay,
         'recursion': recursion,
         'depth': depth,
+        'decoy': decoy,
         'output': outfile
     }
     cmd = build_command(params)
