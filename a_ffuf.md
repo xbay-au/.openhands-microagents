@@ -149,21 +149,6 @@ Agent: [Results]
 
 
 
-## Innovative Uses
-
-- **Parameter Discovery**:
-  ```bash
-  ffuf -w /workspace/wordlists/parameters.txt -u http://example.com/page?FUZZ=test -mc 200,302
-  ```
-
-- **Recursive Scanning**:
-  ```bash
-  ffuf -w /workspace/wordlists/directory-list-2.3-medium.txt \
-       -u http://example.com/FUZZ -recursion -recursion-depth 2
-  ```
-
-- **Custom Filtering**: Use `-fl`, `-fc`, or `-fw` to filter by size, code, or word count.
-
 ## Notes
 
 - Ensure FFUF is installed at `/root/go/bin/ffuf` or in PATH.
