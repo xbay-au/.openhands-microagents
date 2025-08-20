@@ -8,9 +8,9 @@ Added stealth, balanced, fast profiles with preset threads, delay, auto-calibrat
 Prompted optional decoy URL list; integrated -D flag
 4. ✅ Integrate live progress bar for scan
 Use rich.status spinner to indicate live progress
-5. 🔄 Enhance history menu
+5. ✅ Enhance history menu
 Top-level menu to view and re-run past scans
-6. ⏳ Improve custom wordlist UX
+6. 🔄 Improve custom wordlist UX
 Check file existence, preview lines
 7. ⏳ Validate URLs
 Ensure FUZZ placeholder and valid format

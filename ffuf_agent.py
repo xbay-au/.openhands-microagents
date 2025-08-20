@@ -211,8 +211,85 @@ def update_history(entry):
         json.dump(history, f, indent=2)
 
 
+
+
+def load_history():
+    """Load scan history from disk."""
+    if os.path.isfile(HISTORY_FILE):
+        try:
+            return json.load(open(HISTORY_FILE))
+        except:
+            return []
+    return []
+
+
+def show_history_menu():
+    """Display past scans and allow re-run or deletion."""
+    history = load_history()
+    if not history:
+        console.print("No scans in history.", style="yellow")
+        return
+    table = Table(title="Scan History")
+    table.add_column("#", justify="right")
+    table.add_column("Timestamp")
+    table.add_column("Scan Type")
+    table.add_column("Total Hits", justify="right")
+    for idx, entry in enumerate(history, start=1):
+        total = entry.get('summary', {}).get('total', 0)
+        table.add_row(str(idx), entry.get('timestamp', ''), entry.get('scan_type', ''), str(total))
+    console.print(table)
+    choice = console.input("Select entry number to re-run, or 'd<nr>' to delete, blank to return: ").strip()
+    if not choice:
+        return
+    # Deletion
+    if choice.startswith('d'):
+        try:
+            num = int(choice[1:])
+            if 1 <= num <= len(history):
+                del history[num-1]
+                with open(HISTORY_FILE, 'w') as f:
+                    json.dump(history, f, indent=2)
+                console.print(f"Deleted entry {num}.", style="green")
+            else:
+                console.print("Invalid entry number.", style="red")
+        except ValueError:
+            console.print("Invalid selection.", style="red")
+        return
+    # Re-run selection
+    try:
+        num = int(choice)
+    except ValueError:
+        console.print("Invalid selection.", style="red")
+        return
+    if not (1 <= num <= len(history)):
+        console.print("Invalid entry number.", style="red")
+        return
+    entry = history[num-1]
+    console.print(f"Re-running scan from {entry['timestamp']} ({entry['scan_type']})", style="cyan")
+    params = entry['params']
+    cmd = build_command(params)
+    res = run_ffuf(cmd)
+    summary = None
+    if os.path.isfile(params['output']):
+        summary = parse_results(params['output'])
+    new_entry = {
+        'timestamp': datetime.now().isoformat(),
+        'scan_type': entry['scan_type'],
+        'params': params,
+        'summary': summary
+    }
+    update_history(new_entry)
+    console.print("Re-run complete.", style="green")
+
+
 def main():
     console.print("[bold green]FFUF Interactive Agent[/bold green]")
+    # Top-level menu: new scan or history
+    choice = console.input("Select: [bold]n[/bold] for new scan, [bold]h[/bold] for history [n]: ").strip().lower()
+    if choice == 'h':
+        show_history_menu()
+        return
+
     scan_key, (stype, default_list) = choose_scan_type()
     # Determine wordlist
     if scan_key == '9':
