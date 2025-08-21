@@ -312,7 +312,11 @@ def show_history_menu():
 def main():
     console.print("[bold green]FFUF Interactive Agent[/bold green]")
     # Top-level menu: new scan or history
-    choice = console.input("Select: [bold]n[/bold] for new scan, [bold]h[/bold] for history [n]: ").strip().lower()
+    # In non-interactive mode, use command line arguments
+    if args.profile is not None and args.scan_type is not None:
+        choice = "y"  # Simulate "yes" to skip prompts
+    else:
+        choice = console.input("Select: [bold]n[/bold] for new scan, [bold]h[/bold] for history [n]: ").strip().lower()
     if choice == 'h':
         show_history_menu()
         return
